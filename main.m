@@ -1,0 +1,58 @@
+% Script name: main
+% Script description: Scrapes data(books,prices,availability) from 
+% Books to Scrape.com and organise it into a csv file.
+% Date: 15-05-2024
+% Author: Asiamah-Yeboah Kwabena Kwarteng
+% Usage: - Make sure you have all dependent functions in directory.
+%        - Run main program.
+%        - Specify destination folder/filename in prompt.
+
+% MAIN
+% Clean working space
+clc;
+clearvars;
+% Output file path
+output_file_path = input("Enter destination folder\n> ","s");
+output_file_name = input("Enter file name\n> ","s");
+% URLs
+url = "https://books.toscrape.com/catalogue/category/books_1/";
+first_page_url = "https://books.toscrape.com/catalogue/category/books_1/";
+% Data to mine
+book_titles = [];
+book_prices = [];
+book_avaiability = [];
+% Initialise next page
+next_page_exists = true;
+% Page Counter
+page_counter = 1;
+while next_page_exists
+    % Read url
+    html = getHTMLData(url);
+    % Parse html as tree
+    tree = htmlTree(html);
+    % Mine Data
+    [titles,prices,availability] = mineData(tree);
+    % Append Data
+    book_titles = [book_titles;titles];
+    book_prices = [book_prices;prices];
+    book_avaiability = [book_avaiability;availability];
+    % Next page checker
+    if nextPageExists(tree)
+        % Change url to next page and rerun loop
+        clear html
+        url = changeURL2nextpage(tree);
+        fprintf("Page %d successful\n",page_counter)
+        page_counter = page_counter + 1;
+        fprintf("Moving to next page %d...\n",page_counter)
+    else
+        % Terminate loop
+        next_page_exists = false;
+        fprintf("Next page does not exist\n")
+    end
+end
+books_table = table(book_titles,book_prices,book_avaiability,VariableNames=["Book" "Price" "Availability"]);
+% Write the table to a CSV file
+writetable(books_table,strcat(output_file_path,output_file_name,".xls"))
+disp("=============================")
+disp("Scrapped successfully ✅✅")
+disp("=============================")

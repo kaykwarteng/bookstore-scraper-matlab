@@ -51,7 +51,7 @@ while next_page_exists
 end
 books_table = table(book_titles,book_prices,book_avaiability,VariableNames=["Book" "Price" "Availability"]);
 % Write the table to a CSV file
-writetable(books_table,destination_directory)
+writetable(books_table,)
 disp("=============================")
 disp("Scrapped successfully ✅✅")
 disp("=============================")

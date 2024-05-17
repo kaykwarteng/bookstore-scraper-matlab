@@ -11,12 +11,12 @@ try
     html = webread(url);
 catch
     if url == first_page_url
-        warning("Couldn't load page")
+        fprintf(2,"Couldn't load page\n")
         pause(1)
         fprintf("Trying again...\n")
         html = getHTMLData(url);
     else
-        warning("Couldn't load next page")
+        fprintf(2,"Couldn't load next page\n")
         pause(1)
         fprintf("Trying again...\n")
         html = getHTMLData(url);
